@@ -1,5 +1,6 @@
 
 
+
 class Heap:	
     def __init__(self):
         self.heap = [None]
@@ -36,7 +37,10 @@ class Heap:
             temp = self.heap[index]
             self.heap[index] = self.heap[largest]
             self.heap[largest] = temp
-            self.max_heapify(largest)
+            index = index // 2
+            if index < 2:
+                return
+            self.max_heapify(index//2)
 
 if __name__ == '__main__':
     infile = "inputsPS16Q2.txt"
@@ -62,6 +66,8 @@ if __name__ == '__main__':
     while (loop_len > 0):
         heap.max_heapify(loop_len)
         loop_len -= 1
+    
+    print(heap.get_heap())
     
 
     
