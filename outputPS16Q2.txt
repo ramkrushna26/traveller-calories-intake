@@ -1,0 +1,14 @@
+Total Calories: 515
+Food Item Selection Ratio: 
+Food item 1: 0
+Food item 2: 1
+Food item 3: 0
+Food item 4: 1
+Food item 5: 1
+Food item 6: 0.5
+Food item 7: 0
+Food item 8: 1
+Food item 9: 0
+Food item 10: 1
+Food item 11: 0
+Food item 12: 1
