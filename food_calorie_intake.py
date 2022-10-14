@@ -32,17 +32,25 @@ class Heap:
         del self.heap[1]
         self.heap.insert(1,(food_item, quantity, calories))
     
+    #Getting the left child of index passed if left is present
+    def left_child(self, index):
+        return (2 * index) <= self.get_size() and (index * 2) or None
+    
+    #Getting the right child of index passed if right is present    
+    def right_child(self, index):
+        return (2 * index + 1) <= self.get_size() and (index * 2 + 1) or None
+    
     #Generates the max heap
     def max_heapify(self, index):
-        left = (index * 2)
-        right = self.get_size() > (index * 2) and ((index * 2) + 1) or 0
+        left = self.left_child(index)
+        right = self.right_child(index)
         #print("index=>{}, left=>{}, right=>{}".format(index, left, right))
         #print("index=>{}, left=>{}, right=>{}".format(self.heap[index], self.heap[left], self.heap[right]))
-        if left <= self.get_size() and self.heap[left][2] > self.heap[index][2]:
+        if left != None and left <= self.get_size() and self.heap[left][2] > self.heap[index][2]:
             largest = left
         else:
             largest = index
-        if right != 0:
+        if right != None:
             if right <= self.get_size() and self.heap[right][2] > self.heap[largest][2]:
                 largest = right
         if largest != index:
@@ -77,13 +85,18 @@ if __name__ == '__main__':
     with open(infile, "r") as f:
         _, no_of_food_items = f.readline().split(":")
         _, max_bag_weight = f.readline().split(":")
-        no_of_food_items = int(no_of_food_items)
-        max_bag_weight = int(max_bag_weight)
-        
+        try:
+            no_of_food_items = int(no_of_food_items)
+            max_bag_weight = int(max_bag_weight)
+        except ValueError:
+            raise Exception("Couldn't Understand the input. Please check input file!")
         line = f.readline()
         while(line):
             food_item, quantity, calories = line.split("/")
-            elements.append((food_item.strip(), int(quantity), int(calories)))
+            try:
+                elements.append((food_item.strip(), int(quantity), int(calories)))
+            except ValueError:
+                raise Exception("Couldn't Understand the input. Please check input file!")
             items_to_carry[food_item.strip()] = 0
             if len(elements) > no_of_food_items:
                 print("Ignore Food Items greater than {} provided.".format(no_of_food_items))
