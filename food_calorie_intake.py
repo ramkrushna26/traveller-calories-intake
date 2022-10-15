@@ -13,24 +13,34 @@ class Heap:
             self.heap.append(item)
 
     def get_root(self):
-        return self.heap[1]
+        if self.get_size() > 0:
+            return self.heap[1]
+        else:
+            return None 
     
     def get_heap(self):
-        return list(self.heap)
+        if self.get_size() == 0:
+            return None
+        else:
+            return list(self.heap)
         
     def get_size(self):
-        return len(self.heap) - 1
+        if len(self.heap) == 1:
+            return 0
+        else:
+            return len(self.heap) - 1
     
     #Remove the root element from list and max heapify it
     def remove_root(self):
         last_child = self.heap.pop()
         self.heap[1] = last_child
-        self.wrap_max_heapify()
+        if self.get_size() > 1:
+            self.wrap_max_heapify()
     
     #Modify the heap items as per values specified
     def modify_root(self, food_item, quantity, calories):
         del self.heap[1]
-        self.heap.insert(1,(food_item, quantity, calories))
+        self.heap.insert(1,[food_item, quantity, calories])
     
     #Getting the left child of index passed if left is present
     def left_child(self, index):
@@ -89,14 +99,14 @@ if __name__ == '__main__':
             no_of_food_items = int(no_of_food_items)
             max_bag_weight = int(max_bag_weight)
         except ValueError:
-            raise Exception("Couldn't Understand the input. Please check input file!")
+            raise Exception("Incorrect input provided instead of INT. Please check input file!")
         line = f.readline()
         while(line):
             food_item, quantity, calories = line.split("/")
             try:
-                elements.append((food_item.strip(), int(quantity), int(calories)))
+                elements.append([food_item.strip(), int(quantity), int(calories)])
             except ValueError:
-                raise Exception("Couldn't Understand the input. Please check input file!")
+                raise Exception("Couldn't Understand food items in input file. Please check input file!")
             items_to_carry[food_item.strip()] = 0
             if len(elements) > no_of_food_items:
                 print("Ignore Food Items greater than {} provided.".format(no_of_food_items))
@@ -109,11 +119,17 @@ if __name__ == '__main__':
     heap.wrap_max_heapify()
     
     #Processing for calculating item to carry along with total calories
+    root = heap.get_root()
+    if root == None:
+        raise Exception("Didn't provided any food items.")
+    elif root[1] > max_bag_weight:
+        raise Exception("No Food Items to carry with given bag weight")
+
     while(True):
+        root = heap.get_root()
         if current_bag_weight == max_bag_weight:
             break
-        root = heap.get_root()
-        if root[1] < (max_bag_weight - current_bag_weight):
+        elif root[1] < (max_bag_weight - current_bag_weight):
             current_bag_weight += root[1]
             total_calories += (root[1] * root[2])
             items_to_carry.update({root[0]: 1 })
@@ -124,6 +140,8 @@ if __name__ == '__main__':
             total_calories += (remain_quantity * root[2])
             items_to_carry.update({root[0]: remain_quantity / root[1] })
             heap.modify_root(root[0], root[1] - remain_quantity, calories)
+        if heap.get_size() == 0:
+            break
     
     outfile = open("outputPS16Q2.txt", "a")
     outfile.write("Total Calories: {}\n".format(total_calories))
